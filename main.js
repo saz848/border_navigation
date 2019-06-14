@@ -9,6 +9,7 @@ var map = new mapboxgl.Map({
   zoom: 1
 });
 
+var routeThroughIndia = false; 
 
 // set the bounds of the map
 var bounds = [[60.3587, 15.5204], [90.4587, 40.6204]];
@@ -41,6 +42,7 @@ function get_user_input() {
   can_cross = check_user_input(user_czship_1, user_czship_2, descent, drive);
   
   var instr_div = document.getElementById('instructions').innerHTML = "Select a source and destination to get directions.";
+  var mesg_div = document.getElementById('message').innerHTML = "";
 }
 
 function check_user_input(first_cit, second_cit, descent, drive)
@@ -59,6 +61,7 @@ function check_user_input(first_cit, second_cit, descent, drive)
 
   return can_cross; 
 }
+
 
 document.getElementById('btn').addEventListener('click', get_user_input);;
 
@@ -79,7 +82,7 @@ function getCheckResults(coords, callback) {
   checkIfIndia(coords, function(features) {
     var feat_len = features.length;  
     var country; 
-    var isIndia; 
+    var isIndia=false; 
     for (var i = 0; i < feat_len; i++)
     {
       if (features[i].place_type[0] == 'country')
@@ -91,15 +94,32 @@ function getCheckResults(coords, callback) {
         }
       }
     }
-    //console.log(isIndia);
     return callback(isIndia); 
   });
 }
 
-getCheckResults([78.9629, 20.5937], function(isIndia) {
-  console.log(isIndia);
-});
+function checkRoute(waypoints, callback) {
+  var num_wp = waypoints.length;
+  for (var i = 0; i < num_wp; i++) {
+    getCheckResults(waypoints[i], function(isIndia) {
+      if (isIndia) {
+        routeThroughIndia = true; 
+        crossingIndia = true; 
+      }
+      return callback(isIndia);
+    });
+  }
+  //console.log(routeThroughIndia);
+}
 
+
+function find_alt_route(end) 
+{
+  can_cross = false; 
+  console.log(can_cross);
+
+  getRoute(end);
+}
 
 
 // create a function to make a directions request
@@ -126,69 +146,33 @@ function getRoute(end) {
         }
       };
       var my_waypoints = geojson.geometry.coordinates; 
-      var num_waypoints = my_waypoints.length; 
-      for (var i = 0; i < num_waypoints; i++)
-      {
-        checkIfIndia(my_waypoints[i], function(features) {
-          var my_feat = features;
-          var feat_len = features.length;  
-          var country; 
-          var isIndia; 
-          crosses_india = false; 
-          for (var i = 0; i < feat_len; i++)
-          {
-            if (features[i].place_type[0] == 'country')
+      var num_waypoints = my_waypoints.length;
+      my_waypoints.forEach(function(item) {
+        getCheckResults(item, function(crossingIndia) {
+          if (crossingIndia) {
+            if (!can_cross)
             {
-              country = features[i].text;
-              if (country == 'India')
-              {
-                isIndia = true; 
-              }
-            }
-          }
-          if (isIndia) {
-            crosses_india = true; 
-          }
-
-          // if you're crossing India but aren't allowed to, you need to let the user know
-          //console.log(crosses_india);
-          if (!can_cross && crosses_india)
-          {
-            var instr_div = document.getElementById('instructions').innerHTML = "We can't show you a route to India.";
-          }
-          else 
-          {
-            if (map.getSource('route')) {
-              map.getSource('route').setData(geojson);
-            } else { // otherwise, make a new request
-              map.addLayer({
-                id: 'route',
-                type: 'line',
-                source: {
-                  type: 'geojson',
-                  data: {
-                    type: 'Feature',
-                    properties: {},
-                    geometry: {
-                      type: 'LineString',
-                      coordinates: geojson
-                    }
-                  }
-                },
-                layout: {
-                  'line-join': 'round',
-                  'line-cap': 'round'
-                },
-                paint: {
-                  'line-color': '#3887be',
-                  'line-width': 5,
-                  'line-opacity': 0.75
+              getCheckResults(end, function(isIndia) {
+                if (!isIndia) {
+                  var message = document.getElementById('message');
+                  message.innerHTML = 'There is a route that goes around India but we cannot provide it.';
+                }
+                else {
+                  var instr_div = document.getElementById('instructions').innerHTML = "There is no possible route that does not cross the Indian border.";
                 }
               });
             }
+            else 
+            {
+              var instructions = document.getElementById('instructions');
+              var message = document.getElementById('message');
+              console.log(message);
+              message.innerHTML = 'Warning: If you are a U.S. citizen of Pakistani descent, you will not be able to cross the India border. It is also not possible to bring cars across the border. <button id="newRoute">Find alternate route</button>';
+              document.getElementById('newRoute').addEventListener('click', function() {
+                find_alt_route(end);
+              });
               // add turn instructions here at the end
               // get the sidebar and add the instructions
-              var instructions = document.getElementById('instructions');
               var steps = data.legs[0].steps;
         
               if (got_user_info)
@@ -200,10 +184,54 @@ function getRoute(end) {
                 }
               }
             }
+          }
         });
-      }
+      }); 
       // if the route already exists on the map, reset it using setData
       //crosses_india = false; 
+      if (map.getSource('route')) {
+        map.getSource('route').setData(geojson);
+      } else { // otherwise, make a new request
+        map.addLayer({
+          id: 'route',
+          type: 'line',
+          source: {
+            type: 'geojson',
+            data: {
+              type: 'Feature',
+              properties: {},
+              geometry: {
+                type: 'LineString',
+                coordinates: geojson
+              }
+            }
+          },
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': '#3887be',
+            'line-width': 5,
+            'line-opacity': 0.75
+          }
+        });
+      }
+        // add turn instructions here at the end
+        // get the sidebar and add the instructions
+        var instructions = document.getElementById('instructions');
+        var steps = data.legs[0].steps;
+        var message = document.getElementById('message');
+        message.innerHTML="";
+  
+        if (got_user_info)
+        {
+          var tripInstructions = [];
+          for (var i = 0; i < steps.length; i++) {
+            tripInstructions.push('<br><li>' + steps[i].maneuver.instruction) + '</li>';
+            instructions.innerHTML = '<br><span class="duration">Trip duration: ' + Math.floor(data.duration / 60) + ' min 🚴 </span>' + tripInstructions;
+          }
+        }
     };
     req.send();
   }

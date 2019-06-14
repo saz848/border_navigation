@@ -19,7 +19,7 @@
         bottom: 0;
         width: 100%;
       }
-      #instructions {
+      #instructions-wrapper {
         position: absolute;
         margin: 20px;
         width: 25%;
@@ -40,37 +40,40 @@
   </head>
   <body>
     <div id='map'></div>
-    <div id='instructions'>
-      <h2>The following questions are not required but if you provide the answers they will help us find the best route for you.</h2>
-      <h3>We respect your privacy and will not record your results.</h3>
-      <h4>Please select your citizenship:</h4>
-      <select id='czship_1'>
-        <option label=" "></option>
-        <option value="India">India</option>
-        <option value="Pakistan">Pakistan</option>
-        <option value="United States">United States</option>
-        <option value="Other">Other</option>
-      </select>
-      <h4>Please select a secondary citizenship, if applicable:</h4>
-      <select id='czship_2'>
-        <option label=" "></option>
-        <option value="None">None</option>
-        <option value="India">India</option>
-        <option value="Pakistan">Pakistan</option>
-        <option value="United States">United States</option>
-        <option value="Other">Other</option>
-      </select>
-      <h4>Are you of Pakistani descent?</h4>
-      <form action="">
-        <input type="radio" name="descent" value="yes">Yes<br>
-        <input type="radio" name="descent" value="no">No<br>
-      </form>
-      <h4>Do you want to drive the entire route?</h4>
-      <form action="">
-        <input type="radio" name="drive" value="yes">Yes<br>
-        <input type="radio" name="drive" value="no">No<br>
-      </form>
-      <button id="btn">Continue</button>
+    <div id='instructions-wrapper'>
+      <div id ='message'></div>
+      <div id ="instructions">
+        <h2>The following questions are not required but if you provide the answers they will help us find the best route for you.</h2>
+        <h3>We respect your privacy and will not record your results.</h3>
+        <h4>Please select your citizenship:</h4>
+        <select id='czship_1'>
+          <option label=" "></option>
+          <option value="India">India</option>
+          <option value="Pakistan">Pakistan</option>
+          <option value="United States">United States</option>
+          <option value="Other">Other</option>
+        </select>
+        <h4>Please select a secondary citizenship, if applicable:</h4>
+        <select id='czship_2'>
+          <option label=" "></option>
+          <option value="None">None</option>
+          <option value="India">India</option>
+          <option value="Pakistan">Pakistan</option>
+          <option value="United States">United States</option>
+          <option value="Other">Other</option>
+        </select>
+        <h4>Are you of Pakistani descent?</h4>
+        <form action="">
+          <input type="radio" name="descent" value="yes">Yes<br>
+          <input type="radio" name="descent" value="no">No<br>
+        </form>
+        <h4>Do you want to drive the entire route?</h4>
+        <form action="">
+          <input type="radio" name="drive" value="yes">Yes<br>
+          <input type="radio" name="drive" value="no">No<br>
+        </form>
+        <button id="btn">Continue</button>
+      </div>
     </div>
     <script src='main.js'></script>
   </body>
