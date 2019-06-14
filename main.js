@@ -180,7 +180,7 @@ function getRoute(end) {
                 var tripInstructions = [];
                 for (var i = 0; i < steps.length; i++) {
                   tripInstructions.push('<br><li>' + steps[i].maneuver.instruction) + '</li>';
-                  instructions.innerHTML = '<br><span class="duration">Trip duration: ' + Math.floor(data.duration / 60) + ' min 🚴 </span>' + tripInstructions;
+                  instructions.innerHTML = '<br><span class="duration">Trip duration: ' + Math.floor(data.duration / 60) + ' min </span>' + tripInstructions;
                 }
               }
             }
@@ -229,7 +229,7 @@ function getRoute(end) {
           var tripInstructions = [];
           for (var i = 0; i < steps.length; i++) {
             tripInstructions.push('<br><li>' + steps[i].maneuver.instruction) + '</li>';
-            instructions.innerHTML = '<br><span class="duration">Trip duration: ' + Math.floor(data.duration / 60) + ' min 🚴 </span>' + tripInstructions;
+            instructions.innerHTML = '<br><span class="duration">Trip duration: ' + Math.floor(data.duration / 60) + ' min  </span>' + tripInstructions;
           }
         }
     };
