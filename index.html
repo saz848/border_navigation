@@ -5,6 +5,7 @@
     <title></title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.3.0/mapbox-gl-geocoder.min.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css' rel='stylesheet' />
     <style>
       body {
@@ -39,7 +40,38 @@
   </head>
   <body>
     <div id='map'></div>
-    <div id='instructions'></div>
+    <div id='instructions'>
+      <h2>The following questions are not required but if you provide the answers they will help us find the best route for you.</h2>
+      <h3>We respect your privacy and will not record your results.</h3>
+      <h4>Please select your citizenship:</h4>
+      <select id='czship_1'>
+        <option label=" "></option>
+        <option value="India">India</option>
+        <option value="Pakistan">Pakistan</option>
+        <option value="United States">United States</option>
+        <option value="Other">Other</option>
+      </select>
+      <h4>Please select a secondary citizenship, if applicable:</h4>
+      <select id='czship_2'>
+        <option label=" "></option>
+        <option value="None">None</option>
+        <option value="India">India</option>
+        <option value="Pakistan">Pakistan</option>
+        <option value="United States">United States</option>
+        <option value="Other">Other</option>
+      </select>
+      <h4>Are you of Pakistani descent?</h4>
+      <form action="">
+        <input type="radio" name="descent" value="yes">Yes<br>
+        <input type="radio" name="descent" value="no">No<br>
+      </form>
+      <h4>Do you want to drive the entire route?</h4>
+      <form action="">
+        <input type="radio" name="drive" value="yes">Yes<br>
+        <input type="radio" name="drive" value="no">No<br>
+      </form>
+      <button id="btn">Continue</button>
+    </div>
     <script src='main.js'></script>
   </body>
 </html>
